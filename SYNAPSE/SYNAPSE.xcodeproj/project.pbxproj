@@ -1,0 +1,405 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		20C665A7896D16A316415BA6 /* SynapseAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21FB9EDD0E4DC479339F2F /* SynapseAudioEngine.swift */; };
+		2779D6E86FD207820AC3112B /* Neuron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D2C861A51D500B895536E1 /* Neuron.swift */; };
+		2DC072EACF5A06B7A3D594E3 /* SparkFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55786897389F38051EE14ECE /* SparkFactory.swift */; };
+		2E1FA37C500485AACB2F1C19 /* NetworkLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 342C7E180A6C9CE123CC786E /* NetworkLayout.swift */; };
+		317EFD0C2075B4862EAEC827 /* VelocitySmoothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207D4591710F5FA573495B46 /* VelocitySmoothing.swift */; };
+		3D5FF62C3ABC6A62DF9A156C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D045E23134686C4A900267C4 /* ContentView.swift */; };
+		44B7C8F46588E03DCBE4966A /* ReflectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312E64C642910E883B6516CA /* ReflectionView.swift */; };
+		451BE084A3135694106C96B4 /* BrainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4E5B4989812E72F4029044 /* BrainViewModel.swift */; };
+		59798977D3C9A234C85969AC /* DemoModeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912667E8C5708BF30A9E3B8F /* DemoModeController.swift */; };
+		7BC9361E0B56C50CFF2D252B /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020E51BDDC6E934088452336 /* OnboardingView.swift */; };
+		7C73112199349A9AF862952F /* CoordinateMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC61FD44E8B693E9D6A4E5D2 /* CoordinateMapping.swift */; };
+		97D8F6908721C6B40D72FE10 /* NeuronFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEB0267D1D1B1FB5C913434 /* NeuronFactory.swift */; };
+		A1ACCB36CF673BE67F7B35A3 /* SYNAPSEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2EA642E7D303717809319A /* SYNAPSEApp.swift */; };
+		CC523C55CBA83D4FE9BF17F0 /* ARExperienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5156ECFE2A281601415BF9F /* ARExperienceView.swift */; };
+		D7E876A0DA4D2ECF3101CDEF /* BrainState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4892B566C96A51A97FE3F6F6 /* BrainState.swift */; };
+		F8B1ACD1145315192E58F997 /* SceneBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750D7CA8674DD1C393CC929F /* SceneBuilder.swift */; };
+		FE34CF0094F22DEB7E55A207 /* NeuralPathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5813A7ED78CC1F908959A3BF /* NeuralPathway.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		020E51BDDC6E934088452336 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		0A4E5B4989812E72F4029044 /* BrainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainViewModel.swift; sourceTree = "<group>"; };
+		207D4591710F5FA573495B46 /* VelocitySmoothing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VelocitySmoothing.swift; sourceTree = "<group>"; };
+		22D2C861A51D500B895536E1 /* Neuron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neuron.swift; sourceTree = "<group>"; };
+		312E64C642910E883B6516CA /* ReflectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectionView.swift; sourceTree = "<group>"; };
+		342C7E180A6C9CE123CC786E /* NetworkLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLayout.swift; sourceTree = "<group>"; };
+		4892B566C96A51A97FE3F6F6 /* BrainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainState.swift; sourceTree = "<group>"; };
+		4A2EA642E7D303717809319A /* SYNAPSEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SYNAPSEApp.swift; sourceTree = "<group>"; };
+		55786897389F38051EE14ECE /* SparkFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkFactory.swift; sourceTree = "<group>"; };
+		5813A7ED78CC1F908959A3BF /* NeuralPathway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuralPathway.swift; sourceTree = "<group>"; };
+		5FEB0267D1D1B1FB5C913434 /* NeuronFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuronFactory.swift; sourceTree = "<group>"; };
+		750D7CA8674DD1C393CC929F /* SceneBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneBuilder.swift; sourceTree = "<group>"; };
+		912667E8C5708BF30A9E3B8F /* DemoModeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModeController.swift; sourceTree = "<group>"; };
+		BC61FD44E8B693E9D6A4E5D2 /* CoordinateMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateMapping.swift; sourceTree = "<group>"; };
+		D045E23134686C4A900267C4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DADE8938F0A2A79CEA1F513B /* SYNAPSE.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SYNAPSE.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF21FB9EDD0E4DC479339F2F /* SynapseAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynapseAudioEngine.swift; sourceTree = "<group>"; };
+		F5156ECFE2A281601415BF9F /* ARExperienceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARExperienceView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		51974B70D991FA2AEBB4FD8E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4892B566C96A51A97FE3F6F6 /* BrainState.swift */,
+				342C7E180A6C9CE123CC786E /* NetworkLayout.swift */,
+				5813A7ED78CC1F908959A3BF /* NeuralPathway.swift */,
+				22D2C861A51D500B895536E1 /* Neuron.swift */,
+				207D4591710F5FA573495B46 /* VelocitySmoothing.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		741A1F7E4F7BFDD843E82BC9 /* RealityKit */ = {
+			isa = PBXGroup;
+			children = (
+				5FEB0267D1D1B1FB5C913434 /* NeuronFactory.swift */,
+				750D7CA8674DD1C393CC929F /* SceneBuilder.swift */,
+				55786897389F38051EE14ECE /* SparkFactory.swift */,
+			);
+			path = RealityKit;
+			sourceTree = "<group>";
+		};
+		74B157E5D9556310B9E8E09C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				D045E23134686C4A900267C4 /* ContentView.swift */,
+				4A2EA642E7D303717809319A /* SYNAPSEApp.swift */,
+				FDF5C6B2EFECAAD20A2A9917 /* Audio */,
+				51974B70D991FA2AEBB4FD8E /* Models */,
+				741A1F7E4F7BFDD843E82BC9 /* RealityKit */,
+				A503FA6172BB4C1AA79D175F /* Utilities */,
+				CC472CB02D8AE5E12C4ED6C9 /* ViewModels */,
+				F7B5098409B1950C4096C20B /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		75B8A2C913F0CAF7D73C916A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DADE8938F0A2A79CEA1F513B /* SYNAPSE.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8DFD4738A969EDFD04276D54 = {
+			isa = PBXGroup;
+			children = (
+				74B157E5D9556310B9E8E09C /* Sources */,
+				75B8A2C913F0CAF7D73C916A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A503FA6172BB4C1AA79D175F /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				BC61FD44E8B693E9D6A4E5D2 /* CoordinateMapping.swift */,
+				912667E8C5708BF30A9E3B8F /* DemoModeController.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		CC472CB02D8AE5E12C4ED6C9 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				0A4E5B4989812E72F4029044 /* BrainViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F7B5098409B1950C4096C20B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F5156ECFE2A281601415BF9F /* ARExperienceView.swift */,
+				020E51BDDC6E934088452336 /* OnboardingView.swift */,
+				312E64C642910E883B6516CA /* ReflectionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FDF5C6B2EFECAAD20A2A9917 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				DF21FB9EDD0E4DC479339F2F /* SynapseAudioEngine.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DC2994930507006802286B90 /* SYNAPSE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A436A362A63AC6D7CD9118A /* Build configuration list for PBXNativeTarget "SYNAPSE" */;
+			buildPhases = (
+				4AB46CDFFFA7FAB1C4FF76CD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SYNAPSE;
+			packageProductDependencies = (
+			);
+			productName = SYNAPSE;
+			productReference = DADE8938F0A2A79CEA1F513B /* SYNAPSE.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0468A0AB36FDD7D8A4F07034 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = C11EA9E1BC7AB0F58D412FE6 /* Build configuration list for PBXProject "SYNAPSE" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8DFD4738A969EDFD04276D54;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DC2994930507006802286B90 /* SYNAPSE */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4AB46CDFFFA7FAB1C4FF76CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC523C55CBA83D4FE9BF17F0 /* ARExperienceView.swift in Sources */,
+				D7E876A0DA4D2ECF3101CDEF /* BrainState.swift in Sources */,
+				451BE084A3135694106C96B4 /* BrainViewModel.swift in Sources */,
+				3D5FF62C3ABC6A62DF9A156C /* ContentView.swift in Sources */,
+				7C73112199349A9AF862952F /* CoordinateMapping.swift in Sources */,
+				59798977D3C9A234C85969AC /* DemoModeController.swift in Sources */,
+				2E1FA37C500485AACB2F1C19 /* NetworkLayout.swift in Sources */,
+				FE34CF0094F22DEB7E55A207 /* NeuralPathway.swift in Sources */,
+				2779D6E86FD207820AC3112B /* Neuron.swift in Sources */,
+				97D8F6908721C6B40D72FE10 /* NeuronFactory.swift in Sources */,
+				7BC9361E0B56C50CFF2D252B /* OnboardingView.swift in Sources */,
+				44B7C8F46588E03DCBE4966A /* ReflectionView.swift in Sources */,
+				A1ACCB36CF673BE67F7B35A3 /* SYNAPSEApp.swift in Sources */,
+				F8B1ACD1145315192E58F997 /* SceneBuilder.swift in Sources */,
+				2DC072EACF5A06B7A3D594E3 /* SparkFactory.swift in Sources */,
+				20C665A7896D16A316415BA6 /* SynapseAudioEngine.swift in Sources */,
+				317EFD0C2075B4862EAEC827 /* VelocitySmoothing.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		25040D66A23FA11E961D074B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SYNAPSE/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.synapse.neuralplayground;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		465F862782B4BBC7ABE50CAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SYNAPSE/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.synapse.neuralplayground;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A97BA8607A76030C6A9335B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				INFOPLIST_FILE = SYNAPSE/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.synapse.neuralplayground;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B42F4EE9071D4F974D151E2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				INFOPLIST_FILE = SYNAPSE/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.synapse.neuralplayground;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6A436A362A63AC6D7CD9118A /* Build configuration list for PBXNativeTarget "SYNAPSE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B42F4EE9071D4F974D151E2C /* Debug */,
+				A97BA8607A76030C6A9335B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C11EA9E1BC7AB0F58D412FE6 /* Build configuration list for PBXProject "SYNAPSE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				465F862782B4BBC7ABE50CAE /* Debug */,
+				25040D66A23FA11E961D074B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0468A0AB36FDD7D8A4F07034 /* Project object */;
+}
