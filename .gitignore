@@ -1,0 +1,15 @@
+# Cursor IDE
+.cursor/
+
+# Markdown files
+markdowns/
+
+# Swift files
+swift/
+
+# Xcode files
+xcode/
+
+# iOS files
+ios/
+
