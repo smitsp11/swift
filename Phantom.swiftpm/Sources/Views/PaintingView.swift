@@ -13,25 +13,20 @@ struct PaintingView: View {
     }
 
     var body: some View {
-        ZStack {
-            AvatarARView(
-                selectedBrush: $appViewModel.selectedBrush,
-                pressure: $appViewModel.brushPressure,
-                paintSession: paintSession,
-                isDemoMode: isDemoMode
-            )
-            .ignoresSafeArea()
-
-            VStack {
-                HStack {
-                    Spacer()
-                    strokeCountBadge
-                        .padding(.trailing, PhantomTheme.Spacing.lg)
-                        .padding(.top, PhantomTheme.Spacing.md)
-                }
-
-                Spacer()
-
+        AvatarARView(
+            selectedBrush: $appViewModel.selectedBrush,
+            pressure: $appViewModel.brushPressure,
+            paintSession: paintSession,
+            isDemoMode: isDemoMode
+        )
+        .ignoresSafeArea()
+        .overlay(alignment: .topTrailing) {
+            strokeCountBadge
+                .padding(.trailing, PhantomTheme.Spacing.lg)
+                .padding(.top, PhantomTheme.Spacing.md)
+        }
+        .overlay(alignment: .bottom) {
+            VStack(spacing: PhantomTheme.Spacing.sm) {
                 if showInstruction {
                     instructionOverlay
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -43,8 +38,8 @@ struct PaintingView: View {
                     onDone: { appViewModel.advancePhase() }
                 )
                 .padding(.horizontal, PhantomTheme.Spacing.xl)
-                .padding(.bottom, PhantomTheme.Spacing.lg)
             }
+            .padding(.bottom, PhantomTheme.Spacing.lg)
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
