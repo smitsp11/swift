@@ -5,10 +5,13 @@ struct PaintingView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
     @EnvironmentObject private var paintSession: PaintSession
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var showInstruction = true
     @State private var isDemoMode: Bool
     @State private var panelHeight: CGFloat = PaintingView.minPanelHeight
     @GestureState private var activeDrag: CGFloat = 0
+    @State private var badgePulse = false
 
     private static let minPanelHeight: CGFloat = 70
     private static let maxPanelHeight: CGFloat = 200
@@ -27,13 +30,18 @@ struct PaintingView: View {
             selectedBrush: $appViewModel.selectedBrush,
             pressure: $appViewModel.brushPressure,
             paintSession: paintSession,
-            isDemoMode: isDemoMode
+            isDemoMode: isDemoMode,
+            tapToFill: appViewModel.tapToFillEnabled,
+            reduceMotion: reduceMotion
         )
         .ignoresSafeArea()
         .overlay(alignment: .topTrailing) {
-            strokeCountBadge
-                .padding(.trailing, PhantomTheme.Spacing.lg)
-                .padding(.top, PhantomTheme.Spacing.md)
+            VStack(spacing: PhantomTheme.Spacing.sm) {
+                strokeCountBadge
+                tapToFillToggle
+            }
+            .padding(.trailing, PhantomTheme.Spacing.lg)
+            .padding(.top, PhantomTheme.Spacing.md)
         }
         .overlay(alignment: .bottom) {
             toolbarPanel
@@ -64,7 +72,18 @@ struct PaintingView: View {
                 BrushToolbar(
                     selectedBrush: $appViewModel.selectedBrush,
                     pressure: $appViewModel.brushPressure,
-                    onDone: { appViewModel.advancePhase() }
+                    onDone: {
+                        if reduceMotion {
+                            appViewModel.advancePhase()
+                        } else {
+                            withAnimation(.spring(response: 0.25, dampingFraction: 0.5)) {
+                                badgePulse = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                                appViewModel.advancePhase()
+                            }
+                        }
+                    }
                 )
             }
             .padding(.horizontal, PhantomTheme.Spacing.sm)
@@ -119,16 +138,42 @@ struct PaintingView: View {
                     .foregroundStyle(.white)
             }
         }
+        .scaleEffect(badgePulse ? 1.3 : 1.0)
+        .shadow(color: .white.opacity(badgePulse ? 0.4 : 0), radius: badgePulse ? 12 : 0)
         .accessibilityLabel("\(paintSession.strokes.count) strokes painted")
+    }
+
+    private var tapToFillToggle: some View {
+        Button {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                appViewModel.tapToFillEnabled.toggle()
+            }
+        } label: {
+            GlassCard {
+                HStack(spacing: 6) {
+                    Image(systemName: appViewModel.tapToFillEnabled ? "hand.tap.fill" : "hand.tap")
+                        .font(.caption)
+                        .foregroundStyle(appViewModel.tapToFillEnabled ? .white : .white.opacity(0.6))
+                    Text("Tap Fill")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(appViewModel.tapToFillEnabled ? .white : .white.opacity(0.6))
+                }
+            }
+        }
+        .accessibilityLabel("Tap to fill mode")
+        .accessibilityValue(appViewModel.tapToFillEnabled ? "On" : "Off")
+        .accessibilityHint("Tap a body region to fill it with the selected pain texture without needing Apple Pencil")
     }
 
     private var instructionOverlay: some View {
         HStack(spacing: PhantomTheme.Spacing.sm) {
-            Image(systemName: "pencil.tip")
+            Image(systemName: appViewModel.tapToFillEnabled ? "hand.tap.fill" : "pencil.tip")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.6))
 
-            Text("Paint your pain onto the body")
+            Text(appViewModel.tapToFillEnabled
+                 ? "Tap a body region to fill it with pain"
+                 : "Paint your pain onto the body")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.7))
         }

@@ -5,6 +5,8 @@ struct HapticPlaybackView: View {
     @EnvironmentObject private var hapticManager: HapticManager
     @EnvironmentObject private var paintSession: PaintSession
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var showInstruction = true
     @State private var activeTexture: PainTexture?
 
@@ -38,6 +40,7 @@ struct HapticPlaybackView: View {
             paintSession: paintSession,
             isDemoMode: false,
             mode: .hapticPlayback,
+            reduceMotion: reduceMotion,
             hapticManager: hapticManager,
             onActiveTextureChanged: { texture in
                 withAnimation(.easeInOut(duration: 0.15)) {

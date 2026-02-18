@@ -12,6 +12,8 @@ struct AvatarARView: UIViewRepresentable {
     var paintSession: PaintSession
     var isDemoMode: Bool
     var mode: InteractionMode = .painting
+    var tapToFill: Bool = false
+    var reduceMotion: Bool = false
     var hapticManager: HapticManager?
     var onActiveTextureChanged: ((PainTexture?) -> Void)?
 
@@ -54,6 +56,8 @@ struct AvatarARView: UIViewRepresentable {
         context.coordinator.selectedBrush = selectedBrush
         context.coordinator.sliderPressure = pressure
         context.coordinator.mode = mode
+        context.coordinator.tapToFill = tapToFill
+        context.coordinator.reduceMotion = reduceMotion
         context.coordinator.hapticManager = hapticManager
         context.coordinator.onActiveTextureChanged = onActiveTextureChanged
     }
@@ -80,6 +84,8 @@ struct AvatarARView: UIViewRepresentable {
         var sliderPressure: Float = 0.5
         var avatarRoot: Entity?
         var mode: InteractionMode = .painting
+        var tapToFill: Bool = false
+        var reduceMotion: Bool = false
         var hapticManager: HapticManager?
         var onActiveTextureChanged: ((PainTexture?) -> Void)?
 
@@ -156,6 +162,120 @@ struct AvatarARView: UIViewRepresentable {
             let force = touchPressure(touch)
             placePaintMark(at: point, pressure: force)
         }
+
+        // MARK: - Touch Handling (Tap-to-Fill)
+
+        func handleTapToFill(_ touch: UITouch, in view: UIView) {
+            let point = touch.location(in: view)
+            guard let arView = arView, let avatarRoot = avatarRoot else { return }
+            guard let ray = arView.ray(through: point) else { return }
+
+            let results = arView.scene.raycast(
+                origin: ray.origin,
+                direction: ray.direction,
+                length: 10,
+                query: .nearest
+            )
+            guard let hit = results.first else { return }
+
+            let localPos = avatarRoot.convert(position: hit.position, from: nil)
+            let hitName = hit.entity.name
+            let region: String
+            if hitName.hasPrefix("paintMark") || hitName.hasPrefix("paintHalo") {
+                region = BodyRegionMapper.regionFromCoordinate(localPos)
+            } else {
+                let mapped = BodyRegionMapper.region(forEntityNamed: hitName)
+                region = mapped == BodyRegionMapper.regionFromCoordinate(.zero)
+                    ? BodyRegionMapper.regionFromCoordinate(localPos)
+                    : mapped
+            }
+
+            let fillPositions = Self.regionFillPositions[region] ?? [localPos]
+            let pressure = sliderPressure
+
+            for pos in fillPositions {
+                guard paintMarkInfos.count < Self.maxPaintMarks else { break }
+
+                let mark = PaintMarkEntity.create(for: selectedBrush, at: pos, pressure: pressure)
+                avatarRoot.addChild(mark)
+
+                let halo = PaintMarkEntity.createGlowHalo(for: selectedBrush, at: pos, pressure: pressure)
+                avatarRoot.addChild(halo)
+
+                paintMarkInfos.append(PaintMarkInfo(
+                    entity: mark, haloEntity: halo,
+                    texture: selectedBrush, basePosition: pos, baseScale: mark.scale
+                ))
+
+                let stroke = PaintStroke(
+                    location: pos, texture: selectedBrush,
+                    pressure: pressure, bodyRegion: region
+                )
+                Task { @MainActor in
+                    paintSession.addStroke(stroke)
+                }
+            }
+        }
+
+        private static let regionFillPositions: [String: [SIMD3<Float>]] = [
+            "Head": [
+                [0, 0.78, 0.08], [0.04, 0.76, 0.07], [-0.04, 0.76, 0.07],
+                [0, 0.82, 0.06], [0.03, 0.74, 0.08], [-0.03, 0.80, 0.06]
+            ],
+            "Neck": [
+                [0, 0.65, 0.03], [0.02, 0.64, 0.02], [-0.02, 0.66, 0.02]
+            ],
+            "Upper Torso": [
+                [0, 0.52, 0.08], [0.08, 0.50, 0.07], [-0.08, 0.50, 0.07],
+                [0, 0.46, 0.07], [0.06, 0.54, 0.06], [-0.06, 0.46, 0.06]
+            ],
+            "Lower Torso": [
+                [0, 0.35, 0.07], [0.06, 0.33, 0.06], [-0.06, 0.33, 0.06],
+                [0, 0.28, 0.06], [0.04, 0.30, 0.07], [-0.04, 0.36, 0.06]
+            ],
+            "Pelvis": [
+                [0, 0.20, 0.06], [0.05, 0.18, 0.05], [-0.05, 0.18, 0.05],
+                [0, 0.16, 0.05]
+            ],
+            "Left Shoulder": [
+                [-0.19, 0.60, 0.02], [-0.17, 0.58, 0.03], [-0.21, 0.57, 0.02]
+            ],
+            "Right Shoulder": [
+                [0.19, 0.60, 0.02], [0.17, 0.58, 0.03], [0.21, 0.57, 0.02]
+            ],
+            "Left Upper Arm": [
+                [-0.22, 0.46, 0.04], [-0.22, 0.42, 0.04], [-0.22, 0.38, 0.04],
+                [-0.23, 0.44, 0.03], [-0.21, 0.40, 0.03]
+            ],
+            "Right Upper Arm": [
+                [0.22, 0.46, 0.04], [0.22, 0.42, 0.04], [0.22, 0.38, 0.04],
+                [0.23, 0.44, 0.03], [0.21, 0.40, 0.03]
+            ],
+            "Left Forearm": [
+                [-0.22, 0.28, 0.03], [-0.22, 0.24, 0.03], [-0.22, 0.20, 0.03],
+                [-0.23, 0.26, 0.02], [-0.21, 0.22, 0.02]
+            ],
+            "Right Forearm": [
+                [0.22, 0.28, 0.03], [0.22, 0.24, 0.03], [0.22, 0.20, 0.03],
+                [0.23, 0.26, 0.02], [0.21, 0.22, 0.02]
+            ],
+            "Left Upper Leg": [
+                [-0.09, 0.02, 0.05], [-0.09, -0.04, 0.05], [-0.09, -0.10, 0.04],
+                [-0.10, -0.02, 0.04], [-0.08, -0.07, 0.04]
+            ],
+            "Right Upper Leg": [
+                [0.09, 0.02, 0.05], [0.09, -0.04, 0.05], [0.09, -0.10, 0.04],
+                [0.10, -0.02, 0.04], [0.08, -0.07, 0.04]
+            ],
+            "Left Lower Leg": [
+                [-0.09, -0.20, 0.04], [-0.09, -0.26, 0.04], [-0.09, -0.32, 0.03],
+                [-0.10, -0.24, 0.03], [-0.08, -0.28, 0.03]
+            ],
+            "Right Lower Leg": [
+                [0.09, -0.20, 0.04], [0.09, -0.26, 0.04], [0.09, -0.32, 0.03],
+                [0.10, -0.24, 0.03], [0.08, -0.28, 0.03]
+            ],
+        ]
 
         // MARK: - Touch Handling (Haptic Playback)
 
@@ -380,6 +500,7 @@ struct AvatarARView: UIViewRepresentable {
         }
 
         private func updateAnimations() {
+            guard !reduceMotion else { return }
             let time = CACurrentMediaTime()
 
             for info in paintMarkInfos {
@@ -487,7 +608,11 @@ class TouchOverlay: UIView {
         for touch in touches {
             switch coordinator.mode {
             case .painting:
-                coordinator.handleTouchBegan(touch, in: self)
+                if coordinator.tapToFill {
+                    coordinator.handleTapToFill(touch, in: self)
+                } else {
+                    coordinator.handleTouchBegan(touch, in: self)
+                }
             case .hapticPlayback:
                 coordinator.handleHapticTouch(touch, in: self)
             }
@@ -507,7 +632,9 @@ class TouchOverlay: UIView {
         for touch in touches {
             switch coordinator.mode {
             case .painting:
-                coordinator.handleTouchMoved(touch, in: self)
+                if !coordinator.tapToFill {
+                    coordinator.handleTouchMoved(touch, in: self)
+                }
             case .hapticPlayback:
                 coordinator.handleHapticTouch(touch, in: self)
             }

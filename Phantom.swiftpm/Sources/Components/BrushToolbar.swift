@@ -6,6 +6,7 @@ struct BrushToolbar: View {
     var onDone: () -> Void
 
     @Namespace private var brushSelection
+    @State private var bouncingBrush: PainTexture?
 
     var body: some View {
         HStack(spacing: PhantomTheme.Spacing.md) {
@@ -23,6 +24,12 @@ struct BrushToolbar: View {
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                         selectedBrush = texture
+                        bouncingBrush = texture
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) {
+                            bouncingBrush = nil
+                        }
                     }
                 } label: {
                     ZStack {
@@ -36,6 +43,7 @@ struct BrushToolbar: View {
                             Image(systemName: texture.sfSymbol)
                                 .font(.title3)
                                 .foregroundStyle(selectedBrush == texture ? texture.color : .white.opacity(0.5))
+                                .scaleEffect(bouncingBrush == texture ? 1.2 : 1.0)
 
                             Text(texture.displayName)
                                 .font(.caption2)
@@ -47,6 +55,7 @@ struct BrushToolbar: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(texture.displayName) brush")
+                .accessibilityHint("Select \(texture.displayName.lowercased()) pain texture for painting")
                 .accessibilityAddTraits(selectedBrush == texture ? .isSelected : [])
             }
         }
@@ -62,6 +71,7 @@ struct BrushToolbar: View {
                 .tint(selectedBrush.color)
                 .frame(width: 120)
                 .accessibilityLabel("Pain intensity")
+                .accessibilityValue("\(Int(pressure * 100)) percent")
         }
     }
 
@@ -86,5 +96,6 @@ struct BrushToolbar: View {
         Rectangle()
             .fill(.white.opacity(0.1))
             .frame(width: 1, height: 36)
+            .accessibilityHidden(true)
     }
 }
