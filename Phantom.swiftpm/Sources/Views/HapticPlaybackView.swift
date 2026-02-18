@@ -3,52 +3,146 @@ import SwiftUI
 struct HapticPlaybackView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
     @EnvironmentObject private var hapticManager: HapticManager
+    @EnvironmentObject private var paintSession: PaintSession
+
+    @State private var showInstruction = true
+    @State private var activeTexture: PainTexture?
 
     var body: some View {
-        VStack(spacing: PhantomTheme.Spacing.lg) {
-            Spacer()
+        ZStack {
+            avatarLayer
 
-            GlassCard {
-                VStack(spacing: PhantomTheme.Spacing.md) {
-                    Image(systemName: "waveform.path")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.white.opacity(0.5))
-
-                    Text("Doctor Mode — Feel Mode")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-
-                    Text("Haptic playback engine — Phase 3")
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.5))
-
-                    Text(hapticManager.isAvailable
-                         ? "Haptic engine: ready"
-                         : "Haptic engine: unavailable (simulator)")
-                        .font(.caption)
-                        .foregroundStyle(hapticManager.isAvailable
-                                         ? .green.opacity(0.8)
-                                         : .orange.opacity(0.8))
+            VStack {
+                topOverlays
+                Spacer()
+                bottomControls
+            }
+            .padding(PhantomTheme.Spacing.md)
+        }
+        .onAppear {
+            hapticManager.prepare()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                withAnimation(.easeOut(duration: 0.8)) {
+                    showInstruction = false
                 }
-                .frame(maxWidth: .infinity)
-                .padding(PhantomTheme.Spacing.xl)
+            }
+        }
+    }
+
+    // MARK: - 3D Avatar Layer
+
+    private var avatarLayer: some View {
+        AvatarARView(
+            selectedBrush: .constant(.burning),
+            pressure: .constant(0.5),
+            paintSession: paintSession,
+            isDemoMode: false,
+            mode: .hapticPlayback,
+            hapticManager: hapticManager,
+            onActiveTextureChanged: { texture in
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    activeTexture = texture
+                }
+            }
+        )
+        .ignoresSafeArea()
+    }
+
+    // MARK: - Top Overlays
+
+    private var topOverlays: some View {
+        HStack(alignment: .top) {
+            if showInstruction {
+                instructionBadge
+                    .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
             Spacer()
 
+            VStack(alignment: .trailing, spacing: PhantomTheme.Spacing.sm) {
+                engineStatusBadge
+
+                if let texture = activeTexture {
+                    activeTextureBadge(texture)
+                        .transition(.scale.combined(with: .opacity))
+                }
+            }
+        }
+    }
+
+    private var instructionBadge: some View {
+        GlassCard {
+            HStack(spacing: PhantomTheme.Spacing.sm) {
+                Image(systemName: "hand.draw.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.7))
+
+                Text("Drag finger across painted areas to feel the pain")
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+            .padding(.horizontal, PhantomTheme.Spacing.sm)
+            .padding(.vertical, PhantomTheme.Spacing.sm)
+        }
+        .accessibilityLabel("Instructions: drag finger across painted areas to feel haptic feedback")
+    }
+
+    private var engineStatusBadge: some View {
+        GlassCard {
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(hapticManager.isAvailable ? .green : .orange)
+                    .frame(width: 8, height: 8)
+
+                Text(hapticManager.isAvailable ? "Haptics Ready" : "Haptics Unavailable")
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+            .padding(.horizontal, PhantomTheme.Spacing.sm)
+            .padding(.vertical, 6)
+        }
+        .accessibilityLabel(hapticManager.isAvailable
+                            ? "Haptic engine is ready"
+                            : "Haptic engine is unavailable on this device")
+    }
+
+    private func activeTextureBadge(_ texture: PainTexture) -> some View {
+        GlassCard {
+            HStack(spacing: 8) {
+                Image(systemName: texture.sfSymbol)
+                    .font(.body)
+                    .foregroundStyle(texture.color)
+
+                Text(texture.displayName)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.white)
+            }
+            .padding(.horizontal, PhantomTheme.Spacing.md)
+            .padding(.vertical, PhantomTheme.Spacing.sm)
+        }
+        .accessibilityLabel("Feeling \(texture.displayName) pain texture")
+    }
+
+    // MARK: - Bottom Controls
+
+    private var bottomControls: some View {
+        HStack {
+            Spacer()
+
             Button {
+                hapticManager.stopCurrentPattern()
                 appViewModel.advancePhase()
             } label: {
                 GlassCard {
                     Label("Next: Report", systemImage: "arrow.right")
                         .font(.headline)
                         .foregroundStyle(.white)
+                        .padding(.horizontal, PhantomTheme.Spacing.md)
+                        .padding(.vertical, PhantomTheme.Spacing.sm)
                 }
             }
-
-            Spacer()
-                .frame(height: PhantomTheme.Spacing.lg)
+            .accessibilityLabel("Continue to report")
+            .accessibilityHint("Generates a clinical pain report from the painting session")
         }
-        .padding(PhantomTheme.Spacing.xl)
     }
 }

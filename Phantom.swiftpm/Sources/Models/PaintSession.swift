@@ -1,4 +1,5 @@
 import SwiftUI
+import simd
 
 @MainActor
 class PaintSession: ObservableObject {
@@ -15,6 +16,19 @@ class PaintSession: ObservableObject {
     var averageIntensity: Float {
         guard !strokes.isEmpty else { return 0 }
         return strokes.map(\.pressure).reduce(0, +) / Float(strokes.count)
+    }
+
+    func nearestStroke(to position: SIMD3<Float>, threshold: Float = 0.06) -> PaintStroke? {
+        var best: PaintStroke?
+        var bestDist: Float = threshold
+        for stroke in strokes {
+            let d = simd_distance(position, stroke.location)
+            if d < bestDist {
+                bestDist = d
+                best = stroke
+            }
+        }
+        return best
     }
 
     func addStroke(_ stroke: PaintStroke) {

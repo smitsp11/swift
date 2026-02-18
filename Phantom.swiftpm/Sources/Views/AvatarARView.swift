@@ -1,11 +1,19 @@
 import SwiftUI
 import RealityKit
 
+enum InteractionMode {
+    case painting
+    case hapticPlayback
+}
+
 struct AvatarARView: UIViewRepresentable {
     @Binding var selectedBrush: PainTexture
     @Binding var pressure: Float
     var paintSession: PaintSession
     var isDemoMode: Bool
+    var mode: InteractionMode = .painting
+    var hapticManager: HapticManager?
+    var onActiveTextureChanged: ((PainTexture?) -> Void)?
 
     func makeUIView(context: Context) -> ARView {
         let arView = ARView(frame: .zero, cameraMode: .nonAR, automaticallyConfigureSession: false)
@@ -25,14 +33,16 @@ struct AvatarARView: UIViewRepresentable {
         arView.addSubview(overlay)
         coordinator.overlay = overlay
 
-        let hoverGesture = UIHoverGestureRecognizer(
-            target: coordinator,
-            action: #selector(Coordinator.handleHover(_:))
-        )
-        overlay.addGestureRecognizer(hoverGesture)
+        if mode == .painting {
+            let hoverGesture = UIHoverGestureRecognizer(
+                target: coordinator,
+                action: #selector(Coordinator.handleHover(_:))
+            )
+            overlay.addGestureRecognizer(hoverGesture)
+        }
 
-        if isDemoMode {
-            coordinator.loadDemoMarks()
+        if isDemoMode || mode == .hapticPlayback {
+            coordinator.loadExistingMarks()
         }
 
         coordinator.startAnimationTimer()
@@ -43,6 +53,9 @@ struct AvatarARView: UIViewRepresentable {
     func updateUIView(_ arView: ARView, context: Context) {
         context.coordinator.selectedBrush = selectedBrush
         context.coordinator.sliderPressure = pressure
+        context.coordinator.mode = mode
+        context.coordinator.hapticManager = hapticManager
+        context.coordinator.onActiveTextureChanged = onActiveTextureChanged
     }
 
     static func dismantleUIView(_ arView: ARView, coordinator: Coordinator) {
@@ -50,7 +63,11 @@ struct AvatarARView: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(paintSession: paintSession)
+        let c = Coordinator(paintSession: paintSession)
+        c.mode = mode
+        c.hapticManager = hapticManager
+        c.onActiveTextureChanged = onActiveTextureChanged
+        return c
     }
 
     // MARK: - Coordinator
@@ -62,10 +79,14 @@ struct AvatarARView: UIViewRepresentable {
         var selectedBrush: PainTexture = .burning
         var sliderPressure: Float = 0.5
         var avatarRoot: Entity?
+        var mode: InteractionMode = .painting
+        var hapticManager: HapticManager?
+        var onActiveTextureChanged: ((PainTexture?) -> Void)?
 
         private var animationTimer: Timer?
         private var paintMarkInfos: [PaintMarkInfo] = []
         private var hoverPreviewEntity: ModelEntity?
+        private var hapticHighlightEntity: ModelEntity?
 
         private var rotationAnchorEntity: Entity?
         private var initialRotationAngle: Float = 0
@@ -122,7 +143,7 @@ struct AvatarARView: UIViewRepresentable {
             arView.scene.addAnchor(cameraAnchor)
         }
 
-        // MARK: - Touch Handling
+        // MARK: - Touch Handling (Painting)
 
         func handleTouchBegan(_ touch: UITouch, in view: UIView) {
             let point = touch.location(in: view)
@@ -135,6 +156,86 @@ struct AvatarARView: UIViewRepresentable {
             let force = touchPressure(touch)
             placePaintMark(at: point, pressure: force)
         }
+
+        // MARK: - Touch Handling (Haptic Playback)
+
+        func handleHapticTouch(_ touch: UITouch, in view: UIView) {
+            let point = touch.location(in: view)
+            guard let arView = arView, let avatarRoot = avatarRoot else {
+                clearHapticFeedback()
+                return
+            }
+
+            guard let ray = arView.ray(through: point) else {
+                clearHapticFeedback()
+                return
+            }
+
+            let results = arView.scene.raycast(
+                origin: ray.origin,
+                direction: ray.direction,
+                length: 10,
+                query: .nearest
+            )
+
+            guard let hit = results.first else {
+                clearHapticFeedback()
+                return
+            }
+
+            let localPos = avatarRoot.convert(position: hit.position, from: nil)
+
+            Task { @MainActor in
+                guard let stroke = paintSession.nearestStroke(to: localPos) else {
+                    clearHapticFeedback()
+                    return
+                }
+
+                hapticManager?.playTexture(stroke.texture, intensity: stroke.pressure)
+                onActiveTextureChanged?(stroke.texture)
+                showHapticHighlight(at: stroke.location, texture: stroke.texture)
+            }
+        }
+
+        func handleHapticTouchEnded() {
+            clearHapticFeedback()
+        }
+
+        private func clearHapticFeedback() {
+            Task { @MainActor in
+                hapticManager?.stopCurrentPattern()
+                onActiveTextureChanged?(nil)
+            }
+            removeHapticHighlight()
+        }
+
+        private func showHapticHighlight(at position: SIMD3<Float>, texture: PainTexture) {
+            if hapticHighlightEntity == nil {
+                let mesh = MeshResource.generateSphere(radius: 0.04)
+                let entity = ModelEntity(mesh: mesh, materials: [])
+                entity.name = "hapticHighlight"
+                avatarRoot?.addChild(entity)
+                hapticHighlightEntity = entity
+            }
+
+            let color: UIColor
+            switch texture {
+            case .burning:       color = UIColor(red: 1.0, green: 0.35, blue: 0.1, alpha: 0.3)
+            case .electric:      color = UIColor(red: 0.3, green: 0.85, blue: 1.0, alpha: 0.25)
+            case .pinsAndNeedles: color = UIColor(red: 0.9, green: 0.4, blue: 0.9, alpha: 0.3)
+            }
+            var material = UnlitMaterial(color: color)
+            material.blending = .transparent(opacity: .init(floatLiteral: 0.3))
+            hapticHighlightEntity?.model?.materials = [material]
+            hapticHighlightEntity?.position = position
+        }
+
+        private func removeHapticHighlight() {
+            hapticHighlightEntity?.removeFromParent()
+            hapticHighlightEntity = nil
+        }
+
+        // MARK: - Rotation
 
         func handleRotation(translation: CGPoint) {
             guard let anchor = rotationAnchorEntity else { return }
@@ -231,9 +332,10 @@ struct AvatarARView: UIViewRepresentable {
             return sliderPressure
         }
 
-        // MARK: - Demo Mode
+        // MARK: - Load Existing Marks
+
         @MainActor
-        func loadDemoMarks() {
+        func loadExistingMarks() {
             guard let avatarRoot = avatarRoot else { return }
 
             for stroke in paintSession.strokes {
@@ -381,8 +483,14 @@ class TouchOverlay: UIView {
             return
         }
 
+        guard let coordinator = coordinator else { return }
         for touch in touches {
-            coordinator?.handleTouchBegan(touch, in: self)
+            switch coordinator.mode {
+            case .painting:
+                coordinator.handleTouchBegan(touch, in: self)
+            case .hapticPlayback:
+                coordinator.handleHapticTouch(touch, in: self)
+            }
         }
     }
 
@@ -395,8 +503,14 @@ class TouchOverlay: UIView {
             return
         }
 
+        guard let coordinator = coordinator else { return }
         for touch in touches {
-            coordinator?.handleTouchMoved(touch, in: self)
+            switch coordinator.mode {
+            case .painting:
+                coordinator.handleTouchMoved(touch, in: self)
+            case .hapticPlayback:
+                coordinator.handleHapticTouch(touch, in: self)
+            }
         }
     }
 
@@ -405,12 +519,18 @@ class TouchOverlay: UIView {
         if activeTouches.count < 2 {
             rotationStartMidpoint = nil
         }
+        if activeTouches.isEmpty {
+            coordinator?.handleHapticTouchEnded()
+        }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         activeTouches.subtract(touches)
         if activeTouches.count < 2 {
             rotationStartMidpoint = nil
+        }
+        if activeTouches.isEmpty {
+            coordinator?.handleHapticTouchEnded()
         }
     }
 
