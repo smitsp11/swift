@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @EnvironmentObject private var appViewModel: AppViewModel
+    var onDemo: () -> Void
+    var onBegin: () -> Void
 
     var body: some View {
         VStack(spacing: PhantomTheme.Spacing.xl) {
@@ -10,6 +11,7 @@ struct OnboardingView: View {
             Text("Phantom")
                 .font(.system(size: 48, weight: .thin, design: .default))
                 .foregroundStyle(.white)
+                .accessibilityAddTraits(.isHeader)
 
             Text("Pain is a language without words.\nPhantom is the translator.")
                 .font(.title3)
@@ -19,9 +21,7 @@ struct OnboardingView: View {
             Spacer()
 
             HStack(spacing: PhantomTheme.Spacing.md) {
-                Button {
-                    appViewModel.advancePhase()
-                } label: {
+                Button(action: onBegin) {
                     GlassCard {
                         Label("Begin", systemImage: "hand.draw")
                             .font(.headline)
@@ -29,10 +29,10 @@ struct OnboardingView: View {
                             .frame(minWidth: 140)
                     }
                 }
+                .accessibilityLabel("Begin painting")
+                .accessibilityHint("Start with a blank canvas to paint your pain")
 
-                Button {
-                    appViewModel.advancePhase()
-                } label: {
+                Button(action: onDemo) {
                     GlassCard {
                         Label("Demo Mode", systemImage: "play.fill")
                             .font(.headline)
@@ -40,6 +40,8 @@ struct OnboardingView: View {
                             .frame(minWidth: 140)
                     }
                 }
+                .accessibilityLabel("Demo mode")
+                .accessibilityHint("Load a prebuilt pain session to explore the experience")
             }
 
             Spacer()

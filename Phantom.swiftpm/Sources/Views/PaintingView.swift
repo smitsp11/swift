@@ -1,47 +1,86 @@
 import SwiftUI
 import RealityKit
-import PencilKit
 
 struct PaintingView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
+    @EnvironmentObject private var paintSession: PaintSession
+
+    @State private var showInstruction = true
+    @State private var isDemoMode: Bool
+
+    init(isDemoMode: Bool = false) {
+        _isDemoMode = State(initialValue: isDemoMode)
+    }
 
     var body: some View {
-        VStack(spacing: PhantomTheme.Spacing.lg) {
-            Spacer()
+        ZStack {
+            AvatarARView(
+                selectedBrush: $appViewModel.selectedBrush,
+                pressure: $appViewModel.brushPressure,
+                paintSession: paintSession,
+                isDemoMode: isDemoMode
+            )
+            .ignoresSafeArea()
 
-            GlassCard {
-                VStack(spacing: PhantomTheme.Spacing.md) {
-                    Image(systemName: "hand.draw")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.white.opacity(0.5))
-
-                    Text("Painting Canvas")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-
-                    Text("3D avatar and paint engine — Phase 2")
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.5))
+            VStack {
+                HStack {
+                    Spacer()
+                    strokeCountBadge
+                        .padding(.trailing, PhantomTheme.Spacing.lg)
+                        .padding(.top, PhantomTheme.Spacing.md)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(PhantomTheme.Spacing.xl)
-            }
 
-            Spacer()
+                Spacer()
 
-            Button {
-                appViewModel.advancePhase()
-            } label: {
-                GlassCard {
-                    Label("Next: Doctor Mode", systemImage: "arrow.right")
-                        .font(.headline)
-                        .foregroundStyle(.white)
+                if showInstruction {
+                    instructionOverlay
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
-            }
 
-            Spacer()
-                .frame(height: PhantomTheme.Spacing.lg)
+                BrushToolbar(
+                    selectedBrush: $appViewModel.selectedBrush,
+                    pressure: $appViewModel.brushPressure,
+                    onDone: { appViewModel.advancePhase() }
+                )
+                .padding(.horizontal, PhantomTheme.Spacing.xl)
+                .padding(.bottom, PhantomTheme.Spacing.lg)
+            }
         }
-        .padding(PhantomTheme.Spacing.xl)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                withAnimation(.easeOut(duration: 0.8)) {
+                    showInstruction = false
+                }
+            }
+        }
+    }
+
+    private var strokeCountBadge: some View {
+        GlassCard {
+            HStack(spacing: 6) {
+                Image(systemName: "hand.draw.fill")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.6))
+                Text("\(paintSession.strokes.count)")
+                    .font(.headline.monospacedDigit())
+                    .foregroundStyle(.white)
+            }
+        }
+        .accessibilityLabel("\(paintSession.strokes.count) strokes painted")
+    }
+
+    private var instructionOverlay: some View {
+        GlassCard {
+            HStack(spacing: PhantomTheme.Spacing.sm) {
+                Image(systemName: "pencil.tip")
+                    .font(.title3)
+                    .foregroundStyle(.white.opacity(0.7))
+
+                Text("Paint your pain onto the body")
+                    .font(.headline)
+                    .foregroundStyle(.white.opacity(0.9))
+            }
+        }
+        .padding(.bottom, PhantomTheme.Spacing.sm)
     }
 }

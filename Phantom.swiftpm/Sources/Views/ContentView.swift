@@ -3,6 +3,9 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var appViewModel = AppViewModel()
     @StateObject private var hapticManager = HapticManager.shared
+    @StateObject private var paintSession = PaintSession()
+
+    @State private var paintingIsDemoMode = false
 
     var body: some View {
         ZStack {
@@ -10,9 +13,17 @@ struct ContentView: View {
 
             switch appViewModel.currentPhase {
             case .onboarding:
-                OnboardingView()
+                OnboardingView(onDemo: {
+                    paintSession.loadDemo()
+                    paintingIsDemoMode = true
+                    appViewModel.advancePhase()
+                }, onBegin: {
+                    paintSession.clear()
+                    paintingIsDemoMode = false
+                    appViewModel.advancePhase()
+                })
             case .painting:
-                PaintingView()
+                PaintingView(isDemoMode: paintingIsDemoMode)
             case .hapticPlayback:
                 HapticPlaybackView()
             case .report:
@@ -21,6 +32,7 @@ struct ContentView: View {
         }
         .environmentObject(appViewModel)
         .environmentObject(hapticManager)
+        .environmentObject(paintSession)
         .onAppear {
             hapticManager.prepare()
         }

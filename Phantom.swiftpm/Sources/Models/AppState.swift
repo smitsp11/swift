@@ -10,6 +10,8 @@ enum AppPhase: CaseIterable, Sendable {
 @MainActor
 class AppViewModel: ObservableObject {
     @Published var currentPhase: AppPhase = .onboarding
+    @Published var selectedBrush: PainTexture = .burning
+    @Published var brushPressure: Float = 0.5
 
     func advancePhase() {
         let all = AppPhase.allCases
