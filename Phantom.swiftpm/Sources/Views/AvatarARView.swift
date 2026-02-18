@@ -232,7 +232,7 @@ struct AvatarARView: UIViewRepresentable {
         }
 
         // MARK: - Demo Mode
-
+        @MainActor
         func loadDemoMarks() {
             guard let avatarRoot = avatarRoot else { return }
 
