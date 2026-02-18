@@ -141,6 +141,7 @@ struct SessionSnapshot {
     let averageIntensity: Float
     let totalStrokes: Int
 
+    @MainActor
     init(session: PaintSession) {
         self.regions = session.affectedRegions
         self.textureBreakdown = session.textureBreakdown
