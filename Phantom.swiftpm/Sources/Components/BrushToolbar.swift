@@ -8,15 +8,12 @@ struct BrushToolbar: View {
     @Namespace private var brushSelection
 
     var body: some View {
-        GlassCard {
-            HStack(spacing: PhantomTheme.Spacing.md) {
-                brushButtons
-                divider
-                pressureSlider
-                divider
-                doneButton
-            }
-            .padding(.horizontal, PhantomTheme.Spacing.sm)
+        HStack(spacing: PhantomTheme.Spacing.md) {
+            brushButtons
+            divider
+            pressureSlider
+            divider
+            doneButton
         }
     }
 
